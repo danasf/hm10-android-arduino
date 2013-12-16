@@ -16,7 +16,7 @@ Contributions and improvements are very welcome, Android development is quite ne
 
 If you would like to install the APK, it's here:
 
-(../Android/BT4LEDTest/bin/BlueLight.apk)
+../Android/BT4LEDTest/bin/BlueLight.apk
 
 Tested on Nexus 4, Android 4.4.2
 
@@ -28,11 +28,11 @@ Tested on Nexus 4, Android 4.4.2
 * [via eBay](http://www.ebay.com/itm/281193619880)
 * [Make your own breakout board](http://letsmakerobots.com/node/38009)
 
-** Arduino (or compatible) microcontroller **
+**Arduino (or compatible) microcontroller**
 
-** LED Strip **
+**LED Strip**
 
 * [Adafruit Neopixel](https://www.adafruit.com/category/37_168)
 * Search for WS2811
 
-** Android phone with Bluetooth Low Energy support and Android 4.4 **
+**Android phone with Bluetooth Low Energy support and Android 4.4**
