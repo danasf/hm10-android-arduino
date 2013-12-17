@@ -196,17 +196,12 @@ public class DeviceControlActivity extends Activity {
         btn.setOnClickListener(new OnClickListener() {
        	   @Override
    			public void onClick(View v) {
-   				//BluetoothGattCharacteristic characteristic = SampleGattAttributes.lookup("0000ffe1-0000-1000-8000-00805f9b34fb");
-
-				//String str = et.getText().toString() + "\n";
-       		    String str = RGBFrame[0] + "," + RGBFrame[1] + "," + RGBFrame[2] + "\n";
+   	   		    String str = RGBFrame[0] + "," + RGBFrame[1] + "," + RGBFrame[2] + "\n";
                 Log.d(TAG, "Sending result=" + str);
 				final byte[] tx = str.getBytes();
 
 				characteristicTX.setValue(tx);
 				mBluetoothLeService.writeCharacteristic(characteristicTX);
-	   		//	et.setText("1"); 
-
 			}
    
           });
@@ -306,6 +301,7 @@ public class DeviceControlActivity extends Activity {
             uuid = gattService.getUuid().toString();
             currentServiceData.put(
                     LIST_NAME, SampleGattAttributes.lookup(uuid, unknownServiceString));
+            // If the service exists for HM 10 Serial, say so.
             if(SampleGattAttributes.lookup(uuid, unknownServiceString) == "HM 10 Serial") {
                 isSerial.setText("Yes, serial :-)");
             } else {   isSerial.setText("No, serial :-("); }
@@ -332,7 +328,7 @@ public class DeviceControlActivity extends Activity {
             mGattCharacteristics.add(charas);
             gattCharacteristicData.add(gattCharacteristicGroupData);
           
-
+			// get characteristic when UUID matches RX/TX UUID
     		 characteristicTX = gattService
     				.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
              
