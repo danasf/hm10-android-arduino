@@ -192,8 +192,8 @@ public class DeviceControlActivity extends Activity {
         readSeek(mGreen,1);
         readSeek(mBlue,2);
 
-        btn = (Button) findViewById(R.id.send);
-        btn.setOnClickListener(new OnClickListener() {
+      //  btn = (Button) findViewById(R.id.send);
+       /* btn.setOnClickListener(new OnClickListener() {
        	   @Override
    			public void onClick(View v) {
    	   		    String str = RGBFrame[0] + "," + RGBFrame[1] + "," + RGBFrame[2] + "\n";
@@ -204,7 +204,7 @@ public class DeviceControlActivity extends Activity {
 				mBluetoothLeService.writeCharacteristic(characteristicTX);
 			}
    
-          });
+          });*/
      
         
         getActionBar().setTitle(mDeviceName);
