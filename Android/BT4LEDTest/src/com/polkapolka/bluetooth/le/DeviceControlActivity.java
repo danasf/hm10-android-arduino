@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
 import android.widget.SeekBar;
 
 /**
@@ -71,6 +72,8 @@ public class DeviceControlActivity extends Activity {
     private boolean mConnected = false;
     private BluetoothGattCharacteristic mNotifyCharacteristic;
     private BluetoothGattCharacteristic characteristicTX;
+    private BluetoothGattCharacteristic characteristicRX;
+
 	private Map<UUID, BluetoothGattCharacteristic> map = new HashMap<UUID, BluetoothGattCharacteristic>();
 
     public final static UUID HM_RX_TX =
@@ -78,6 +81,7 @@ public class DeviceControlActivity extends Activity {
 
     private final String LIST_NAME = "NAME";
     private final String LIST_UUID = "UUID";
+	private String data;
 
     // Code to manage Service lifecycle.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -122,43 +126,9 @@ public class DeviceControlActivity extends Activity {
                 // Show all the supported services and characteristics on the user interface.
                 displayGattServices(mBluetoothLeService.getSupportedGattServices());
             } else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA));
+                displayData(intent.getStringExtra(mBluetoothLeService.EXTRA_DATA));
             }
         }
-    };
-
-    // If a given GATT characteristic is selected, check for supported features.  This sample
-    // demonstrates 'Read' and 'Notify' features.  See
-    // http://d.android.com/reference/android/bluetooth/BluetoothGatt.html for the complete
-    // list of supported characteristic features.
-    private final ExpandableListView.OnChildClickListener servicesListClickListner =
-            new ExpandableListView.OnChildClickListener() {
-                @Override
-                public boolean onChildClick(ExpandableListView parent, View v, int groupPosition,
-                                            int childPosition, long id) {
-                    if (mGattCharacteristics != null) {
-                        final BluetoothGattCharacteristic characteristic =
-                                mGattCharacteristics.get(groupPosition).get(childPosition);
-                        final int charaProp = characteristic.getProperties();
-                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
-                            // If there is an active notification on a characteristic, clear
-                            // it first so it doesn't update the data field on the user interface.
-                            if (mNotifyCharacteristic != null) {
-                                mBluetoothLeService.setCharacteristicNotification(
-                                        mNotifyCharacteristic, false);
-                                mNotifyCharacteristic = null;
-                            }
-                            mBluetoothLeService.readCharacteristic(characteristic);
-                        }
-                        if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                            mNotifyCharacteristic = characteristic;
-                            mBluetoothLeService.setCharacteristicNotification(
-                                    characteristic, true);
-                        }
-                        return true;
-                    }
-                    return false;
-                }
     };
 
     private void clearUI() {
@@ -177,9 +147,7 @@ public class DeviceControlActivity extends Activity {
 
         // Sets up UI references.
         ((TextView) findViewById(R.id.device_address)).setText(mDeviceAddress);
-    //    mGattServicesList = (ExpandableListView) findViewById(R.id.gatt_services_list);
-   //     mGattServicesList.setOnChildClickListener(servicesListClickListner);
-        mConnectionState = (TextView) findViewById(R.id.connection_state);
+         mConnectionState = (TextView) findViewById(R.id.connection_state);
         // is serial present?
         isSerial = (TextView) findViewById(R.id.isSerial);
 
@@ -191,22 +159,7 @@ public class DeviceControlActivity extends Activity {
         readSeek(mRed,0);
         readSeek(mGreen,1);
         readSeek(mBlue,2);
-
-      //  btn = (Button) findViewById(R.id.send);
-       /* btn.setOnClickListener(new OnClickListener() {
-       	   @Override
-   			public void onClick(View v) {
-   	   		    String str = RGBFrame[0] + "," + RGBFrame[1] + "," + RGBFrame[2] + "\n";
-                Log.d(TAG, "Sending result=" + str);
-				final byte[] tx = str.getBytes();
-
-				characteristicTX.setValue(tx);
-				mBluetoothLeService.writeCharacteristic(characteristicTX);
-			}
-   
-          });*/
      
-        
         getActionBar().setTitle(mDeviceName);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         Intent gattServiceIntent = new Intent(this, BluetoothLeService.class);
@@ -275,6 +228,7 @@ public class DeviceControlActivity extends Activity {
     }
 
     private void displayData(String data) {
+
         if (data != null) {
             mDataField.setText(data);
         }
@@ -308,46 +262,13 @@ public class DeviceControlActivity extends Activity {
             currentServiceData.put(LIST_UUID, uuid);
             gattServiceData.add(currentServiceData);
 
-            ArrayList<HashMap<String, String>> gattCharacteristicGroupData =
-                    new ArrayList<HashMap<String, String>>();
-            List<BluetoothGattCharacteristic> gattCharacteristics =
-                    gattService.getCharacteristics();
-            ArrayList<BluetoothGattCharacteristic> charas =
-                    new ArrayList<BluetoothGattCharacteristic>();
-
-            // Loops through available Characteristics.
-            for (BluetoothGattCharacteristic gattCharacteristic : gattCharacteristics) {
-                charas.add(gattCharacteristic);
-                HashMap<String, String> currentCharaData = new HashMap<String, String>();
-                uuid = gattCharacteristic.getUuid().toString();
-                currentCharaData.put(
-                        LIST_NAME, SampleGattAttributes.lookup(uuid, unknownCharaString));
-                currentCharaData.put(LIST_UUID, uuid);
-                gattCharacteristicGroupData.add(currentCharaData);
-            }
-            mGattCharacteristics.add(charas);
-            gattCharacteristicData.add(gattCharacteristicGroupData);
-          
-			// get characteristic when UUID matches RX/TX UUID
+     			// get characteristic when UUID matches RX/TX UUID
     		 characteristicTX = gattService
     				.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
-             
+    		 characteristicRX = gattService
+    					.getCharacteristic(BluetoothLeService.UUID_HM_RX_TX);
         }
         
-
-
-        SimpleExpandableListAdapter gattServiceAdapter = new SimpleExpandableListAdapter(
-                this,
-                gattServiceData,
-                android.R.layout.simple_expandable_list_item_2,
-                new String[] {LIST_NAME, LIST_UUID},
-                new int[] { android.R.id.text1, android.R.id.text2 },
-                gattCharacteristicData,
-                android.R.layout.simple_expandable_list_item_2,
-                new String[] {LIST_NAME, LIST_UUID},
-                new int[] { android.R.id.text1, android.R.id.text2 }
-        );
-       // mGattServicesList.setAdapter(gattServiceAdapter);
     }
 
     private static IntentFilter makeGattUpdateIntentFilter() {
@@ -369,8 +290,7 @@ public class DeviceControlActivity extends Activity {
         		Log.i(TAG, "SeekBar value is "+progress);
         		RGBFrame[pos]=progress;
            		makeChange();
-
-        	   } 
+        		} 
 
         	   @Override 
         	   public void onStartTrackingTouch(SeekBar seekBar) { 
@@ -391,6 +311,8 @@ public class DeviceControlActivity extends Activity {
 
 			characteristicTX.setValue(tx);
 			mBluetoothLeService.writeCharacteristic(characteristicTX);
+			mBluetoothLeService.setCharacteristicNotification(characteristicRX,true);
+
     }
    
 }

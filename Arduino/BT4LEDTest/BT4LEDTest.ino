@@ -50,6 +50,9 @@ void loop() {
       blue = constrain(blue, 0, 255);
       // fill strip
       colorSet(strip.Color(red, green, blue), 0); 
+      
+      // send some data back
+      mySerial.println("received:"+String(red)+","+String(green)+","+String(blue));
      
    }
 }

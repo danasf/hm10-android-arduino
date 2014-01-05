@@ -27,6 +27,7 @@ Tested on Nexus 4, Android 4.4.2
 * [via AliExpress](http://www.aliexpress.com/item/Free-Shipping-1pc-HM-10-transparent-serial-port-Bluetooth-4-0-module-with-logic-level-translator/1214902105.html)
 * [via eBay](http://www.ebay.com/itm/281193619880)
 * [Make your own breakout board](http://letsmakerobots.com/node/38009)
+* [My Arduino/BLE Instructable](http://www.instructables.com/id/Control-RGB-lights-from-Android-with-Arduino-Bluet/)
 
 **Arduino (or compatible) microcontroller**
 
