@@ -41,4 +41,7 @@
         <item >Blue</item>
     </string-array>
     <string name="button">Send</string>
+    <string name="red_slide">Red</string>
+    <string name="blue_slide">Blue</string>
+    <string name="green_slide">Green</string>
 </resources>

@@ -47,7 +47,6 @@ public class BluetoothLeService extends Service {
     private String mBluetoothDeviceAddress;
     private BluetoothGatt mBluetoothGatt;
     private int mConnectionState = STATE_DISCONNECTED;
-
     private static final int STATE_DISCONNECTED = 0;
     private static final int STATE_CONNECTING = 1;
     private static final int STATE_CONNECTED = 2;
@@ -62,9 +61,6 @@ public class BluetoothLeService extends Service {
             "com.example.bluetooth.le.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA =
             "com.example.bluetooth.le.EXTRA_DATA";
-
-    public final static UUID UUID_HEART_RATE_MEASUREMENT =
-            UUID.fromString(SampleGattAttributes.HEART_RATE_MEASUREMENT);
     public final static UUID UUID_HM_RX_TX =
             UUID.fromString(SampleGattAttributes.HM_RX_TX);
 
@@ -122,26 +118,9 @@ public class BluetoothLeService extends Service {
         sendBroadcast(intent);
     }
 
-    private void broadcastUpdate(final String action,
-                                 final BluetoothGattCharacteristic characteristic) {
+    private void broadcastUpdate(final String action,final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
 
-        // This is special handling for the Heart Rate Measurement profile.  Data parsing is
-        // carried out as per profile specifications:
-        // http://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.heart_rate_measurement.xml
-        if (UUID_HEART_RATE_MEASUREMENT.equals(characteristic.getUuid())) {
-            int flag = characteristic.getProperties();
-            if ((flag & 0x01) != 0) {
-               // format = BluetoothGattCharacteristic.getValue();
-                Log.d(TAG, "Heart rate format UINT16.");
-            } else {
-                //format = BluetoothGattCharacteristic.FORMAT_STRING;
-                Log.d(TAG, "Heart rate format UINT8.");
-            }
-            //final int heartRate = characteristic.getIntValue(format, 1);
-            //Log.d(TAG, String.format("Received heart rate: %d", heartRate));
-            //intent.putExtra(EXTRA_DATA, String.valueOf(heartRate));
-        } else {
             // For all other profiles, writes the data formatted in HEX.
             final byte[] data = characteristic.getValue();
     		Log.i(TAG, "data"+characteristic.getValue());
@@ -149,13 +128,12 @@ public class BluetoothLeService extends Service {
             if (data != null && data.length > 0) {
                 final StringBuilder stringBuilder = new StringBuilder(data.length);
                 for(byte byteChar : data)
-                    stringBuilder.append(String.format("%02X ", byteChar));
-                Log.d(TAG, String.format("Received data: %s", new String(data)));
-                //intent.putExtra(EXTRA_DATA, new String(data) + "\n" + stringBuilder.toString());
-                intent.putExtra(EXTRA_DATA, new String(data));
+                stringBuilder.append(String.format("%02X ", byteChar));
+                Log.d(TAG, String.format("%s", new String(data)));
+                // getting cut off when longer, need to push on new line, 0A
+                intent.putExtra(EXTRA_DATA,String.format("%s", new String(data)));
 
             }
-        }
         sendBroadcast(intent);
     }
 
@@ -230,6 +208,9 @@ public class BluetoothLeService extends Service {
                 mConnectionState = STATE_CONNECTING;
                 return true;
             } else {
+                final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+                mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+                mBluetoothDeviceAddress = address;
                 return false;
             }
         }

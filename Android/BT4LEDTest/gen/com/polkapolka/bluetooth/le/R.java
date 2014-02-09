@@ -46,10 +46,12 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f040000;
         public static final int ble_not_supported=0x7f040001;
+        public static final int blue_slide=0x7f040014;
         public static final int button=0x7f040012;
         public static final int connected=0x7f040006;
         public static final int disconnected=0x7f040007;
         public static final int error_bluetooth_not_supported=0x7f040009;
+        public static final int green_slide=0x7f040015;
         public static final int is_serial=0x7f040011;
         public static final int label_data=0x7f040002;
         public static final int label_device_address=0x7f040003;
@@ -61,6 +63,7 @@ public final class R {
         public static final int menu_scan=0x7f04000f;
         public static final int menu_stop=0x7f040010;
         public static final int no_data=0x7f040005;
+        public static final int red_slide=0x7f040013;
         public static final int title_devices=0x7f040008;
         public static final int unknown_characteristic=0x7f04000b;
         public static final int unknown_device=0x7f04000a;

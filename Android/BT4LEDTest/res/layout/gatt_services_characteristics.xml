@@ -59,12 +59,13 @@
                   android:textSize="18sp"/>
         <Space android:layout_width="5dp"
                android:layout_height="wrap_content"/>
-        <TextView android:id="@+id/data_value"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:text="@string/no_data"
-                  android:textSize="18sp"/>
-       
+
+        <TextView
+            android:id="@+id/data_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_data"
+            android:textSize="18sp" />
         
     </LinearLayout>
      <TextView
@@ -76,9 +77,9 @@
 
     <TextView
         android:id="@+id/textView1"
+        android:text="@string/red_slide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Red"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <SeekBar
@@ -90,9 +91,9 @@
 
     <TextView
         android:id="@+id/textView2"
+        android:text="@string/green_slide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Green"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 	 <SeekBar
@@ -103,9 +104,9 @@
 
 	 <TextView
 	     android:id="@+id/textView3"
+	     android:text="@string/blue_slide"
 	     android:layout_width="wrap_content"
 	     android:layout_height="wrap_content"
-	     android:text="Blue"
 	     android:textAppearance="?android:attr/textAppearanceSmall" />
 
 	<SeekBar
@@ -113,8 +114,4 @@
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
 	    android:max="255" />
-
-                     "
-    
-
 </LinearLayout>
